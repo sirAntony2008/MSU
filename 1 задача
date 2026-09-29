@@ -1,0 +1,47 @@
+#include <stdio.h>
+
+int count_with_condition(FILE *f);
+
+int count_with_condition(FILE *f)
+{
+    int count = 0;
+    double current = 0., previous = 0., preprevious = 0.;
+    
+    if (fscanf(f, "%lf", &preprevious) != 1)
+    {
+        printf("File is empty");
+        return 0;
+    }
+    
+    if (fscanf(f, "%lf", &previous) != 1)
+    {
+        printf("Not enough numbers");
+        return 0;
+    }
+    
+    while (fscanf(f, "%lf", &current) == 1)
+    {
+        if (current > preprevious) 
+        {
+            count += 1; 
+        }
+        preprevious = previous;
+        previous = current;
+    }
+    return count;
+}
+
+int main(void)
+{
+    FILE *f = fopen("input_data.txt", "r");
+    if (f == NULL)
+    {
+        printf("File error");
+        return -1;
+    }
+    else
+    {
+        printf("Answer: %d", count_with_condition(f));
+        return 0;
+    }
+}
