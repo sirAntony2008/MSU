@@ -1,0 +1,116 @@
+#ifndef SUM_FUNC_H
+#define SUM_FUNC_H
+
+#include <stdio.h>
+
+// Возвращает:
+//  1  - если сумма чётных больше
+// -1  - если сумма нечётных больше
+//  0  - если суммы равны
+// -2  - если возникла ошибка или файл пуст
+int compare_even_odd_sums(FILE *f);
+
+#endif
+
+
+
+
+#include "sum_func.h"
+
+int compare_even_odd_sums(FILE *f)
+{
+    long long sum_even = 0;
+    long long sum_odd = 0;
+    long long current = 0;
+    int count = 0;
+
+    // Читаем целые числа из файла до конца
+    while (fscanf(f, "%lld", &current) == 1)
+    {
+        count++;
+        if (current % 2 == 0)
+        {
+            sum_even += current;
+        }
+        else
+        {
+            sum_odd += current;
+        }
+    }
+
+    if (count == 0)
+    {
+        printf("File is empty or contains invalid data\n");
+        return -2;
+    }
+
+    printf("Sum of even numbers: %lld\n", sum_even);
+    printf("Sum of odd numbers: %lld\n", sum_odd);
+
+    if (sum_even > sum_odd)
+    {
+        return 1;
+    }
+    else if (sum_odd > sum_even)
+    {
+        return -1;
+    }
+    else
+    {
+        return 0;
+    }
+}
+
+
+
+
+
+#include <stdio.h>
+#include "sum_func.h"
+
+int main(void)
+{
+    FILE *f = fopen("input_data.txt", "r");
+    if (f == NULL)
+    {
+        printf("File error\n");
+        return -1;
+    }
+
+    int result = compare_even_odd_sums(f);
+    fclose(f);
+
+    if (result == 1)
+    {
+        printf("Sum of EVEN numbers is GREATER.\n");
+    }
+    else if (result == -1)
+    {
+        printf("Sum of ODD numbers is GREATER.\n");
+    }
+    else if (result == 0)
+    {
+        printf("Sums of even and odd numbers are EQUAL.\n");
+    }
+    else
+    {
+        printf("Error calculating sums.\n");
+        return -1;
+    }
+
+    return 0;
+}
+
+
+
+
+
+
+all: main.o sum_func.o
+	gcc main.o sum_func.o -o program && del *.o
+
+main.o: main.c
+	gcc -c main.c
+
+sum_func.o: sum_func.c
+	gcc -c sum_func.c
